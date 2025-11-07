@@ -1,0 +1,1935 @@
+Voici la version finale avec partage de score :
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INNOVTECH - ProTyping Master</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: none;
+        }
+
+        .auth-container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .about-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            display: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .game-area {
+            display: flex;
+            padding: 25px;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .keyboard-section {
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .typing-section {
+            flex: 2;
+            min-width: 400px;
+            padding: 25px;
+        }
+
+        .keyboard {
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            min-height: 300px;
+            overflow: hidden;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .key {
+            background: #34495e;
+            color: #ecf0f1;
+            border: 2px solid #7f8c8d;
+            border-radius: 6px;
+            padding: 15px 18px;
+            margin: 3px;
+            min-width: 45px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 16px;
+            cursor: default;
+            transition: all 0.15s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .key.space {
+            min-width: 350px;
+        }
+
+        .key.tab, .key.caps, .key.shift, .key.enter, .key.backspace {
+            min-width: 90px;
+            font-size: 12px;
+        }
+
+        .key.active {
+            background: #e74c3c !important;
+            transform: scale(0.92);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
+        }
+
+        /* Mains réalistes */
+        .hands-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .hand {
+            position: absolute;
+            width: 80px;
+            height: 120px;
+            background: linear-gradient(135deg, #f5d6ba 0%, #e8c4a8 100%);
+            border-radius: 25px 25px 15px 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            border: 1px solid #d4a78a;
+        }
+
+        .hand.left {
+            left: 12%;
+            top: 15px;
+            transform: rotate(-5deg);
+        }
+
+        .hand.right {
+            right: 12%;
+            top: 15px;
+            transform: rotate(5deg);
+        }
+
+        .palm {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(135deg, #f5d6ba 0%, #e8c4a8 100%);
+            border-radius: 50%;
+            top: 5px;
+            left: 10px;
+            border: 1px solid #d4a78a;
+        }
+
+        .fingers {
+            position: absolute;
+            top: 0;
+            left: 5px;
+            right: 5px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .finger {
+            width: 10px;
+            height: 45px;
+            background: linear-gradient(to bottom, #f5d6ba 0%, #e8c4a8 70%, #d4a78a 100%);
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.15s ease;
+            position: relative;
+            border: 1px solid #d4a78a;
+        }
+
+        .finger::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #f5d6ba;
+            border-radius: 50%;
+            top: -4px;
+            left: 1px;
+            border: 1px solid #d4a78a;
+        }
+
+        .finger.active {
+            background: linear-gradient(to bottom, #3498db 0%, #2980b9 70%, #1f618d 100%);
+            transform: translateY(15px);
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+        }
+
+        .finger.active::before {
+            background: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.6);
+        }
+
+        .thumb {
+            position: absolute;
+            width: 12px;
+            height: 30px;
+            background: linear-gradient(to bottom, #f5d6ba 0%, #e8c4a8 70%, #d4a78a 100%);
+            border-radius: 5px 0 0 5px;
+            top: 35px;
+            left: -8px;
+            transform: rotate(-20deg);
+            border: 1px solid #d4a78a;
+        }
+
+        .thumb::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #f5d6ba;
+            border-radius: 50%;
+            top: -4px;
+            left: 2px;
+            border: 1px solid #d4a78a;
+        }
+
+        .hand.right .thumb {
+            left: auto;
+            right: -8px;
+            border-radius: 0 5px 5px 0;
+            transform: rotate(20deg);
+        }
+
+        .target-text {
+            background: linear-gradient(135deg, #ecf0f1 0%, #f8f9fa 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 22px;
+            line-height: 1.7;
+            min-height: 140px;
+            font-family: 'Courier New', monospace;
+            border: 2px solid #e9ecef;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .target-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .target-text span {
+            transition: all 0.1s ease;
+            position: relative;
+        }
+
+        .target-text .current {
+            background: #3498db;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4); }
+            50% { box-shadow: 0 2px 15px rgba(52, 152, 219, 0.8); }
+            100% { box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4); }
+        }
+
+        .target-text .correct {
+            color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+            font-weight: 500;
+        }
+
+        .target-text .incorrect {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.15);
+            text-decoration: underline wavy;
+            font-weight: 500;
+        }
+
+        .input-area {
+            margin-bottom: 25px;
+        }
+
+        #userInput {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            border: 3px solid #dee2e6;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #userInput:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .mode-selector {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .mode-selector h4 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .mode-selector label {
+            margin-right: 25px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .mode-selector label:hover {
+            background: #f8f9fa;
+        }
+
+        .mode-selector input {
+            margin-right: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea, .form-group input[type="date"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #fff;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .about-content {
+            line-height: 1.8;
+            color: #34495e;
+        }
+
+        .about-content h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 32px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .about-content h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            border-radius: 2px;
+        }
+
+        .about-content h2 {
+            color: #3498db;
+            margin: 30px 0 15px 0;
+            font-size: 24px;
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            font-size: 17px;
+            text-align: justify;
+        }
+
+        .slogan {
+            font-style: italic;
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            margin: 25px 0;
+            font-size: 22px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
+            border-radius: 10px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .founder {
+            text-align: center;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 20px 0;
+            font-size: 18px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+            border-radius: 10px;
+            border-left: 5px solid #27ae60;
+        }
+
+        /* Chronomètre */
+        .timer-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .timer-label {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        /* Niveaux */
+        .level-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .level-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .level-progress {
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .level-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .level-reward {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+
+        /* Partage de score */
+        .share-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 1px solid #dee2e6;
+        }
+
+        .share-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Chatbox Styles */
+        .chatbox-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chatbox-toggle {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+            font-size: 28px;
+            transition: all 0.3s;
+            animation: bounceChat 2s infinite;
+        }
+
+        @keyframes bounceChat {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .chatbox-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.6);
+        }
+
+        .chatbox {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 400px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+
+        .chatbox-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .chatbox-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .chatbox-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
+        }
+
+        .chatbox-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            animation: fadeInUp 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            line-height: 1.5;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            margin-right: auto;
+            border-left: 4px solid #3498db;
+            color: #2c3e50;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            margin-left: auto;
+            border-right: 4px solid #1f618d;
+        }
+
+        .chatbox-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            background: white;
+        }
+
+        .chatbox-input input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            margin-right: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .chatbox-input input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .chatbox-input button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .chatbox-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px;
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+
+        .welcome-message i {
+            font-size: 48px;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .keyboard-row .key {
+                padding: 10px 12px;
+                min-width: 35px;
+                font-size: 14px;
+            }
+            
+            .key.space {
+                min-width: 250px;
+            }
+            
+            .key.tab, .key.caps, .key.shift, .key.enter, .key.backspace {
+                min-width: 70px;
+                font-size: 11px;
+            }
+            
+            .chatbox {
+                width: 320px;
+                height: 450px;
+                right: 10px;
+            }
+            
+            .target-text {
+                font-size: 18px;
+                padding: 20px;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-item {
+                min-width: auto;
+            }
+            
+            .hand {
+                width: 60px;
+                height: 90px;
+            }
+            
+            .finger {
+                width: 8px;
+                height: 35px;
+            }
+            
+            .timer-display {
+                font-size: 36px;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .auth-container, .about-container, .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+            
+            .key {
+                padding: 8px 10px;
+                min-width: 28px;
+                font-size: 12px;
+                margin: 2px;
+            }
+            
+            .key.space {
+                min-width: 180px;
+            }
+            
+            .chatbox {
+                width: 280px;
+                height: 400px;
+            }
+            
+            .timer-display {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page d'authentification -->
+    <div class="auth-container" id="authPage">
+        <div class="logo">
+            <i class="fas fa-keyboard"></i> INNOVTECH ProTyping Master
+        </div>
+        <h2>📝 Informations utilisateur</h2>
+        <p style="color: #6c757d; margin-bottom: 25px;">Veuillez remplir vos informations</p>
+        
+        <form id="userAuthForm">
+            <div class="form-group">
+                <label for="firstName"><i class="fas fa-user"></i> Prénom *</label>
+                <input type="text" id="firstName" required placeholder="Votre prénom">
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName"><i class="fas fa-user-tag"></i> Nom *</label>
+                <input type="text" id="lastName" required placeholder="Votre nom">
+            </div>
+            
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email *</label>
+                <input type="email" id="email" required placeholder="votre@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="birthDate"><i class="fas fa-calendar"></i> Date de naissance *</label>
+                <input type="date" id="birthDate" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="birthPlace"><i class="fas fa-map-marker-alt"></i> Lieu de naissance *</label>
+                <input type="text" id="birthPlace" required placeholder="Votre ville de naissance">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone"><i class="fas fa-phone"></i> Téléphone</label>
+                <input type="tel" id="phone" placeholder="Votre numéro">
+            </div>
+            
+            <div class="form-group">
+                <label for="occupation"><i class="fas fa-briefcase"></i> Profession</label>
+                <input type="text" id="occupation" placeholder="Votre profession">
+            </div>
+            
+            <div class="form-group">
+                <label for="experience"><i class="fas fa-chart-line"></i> Expérience</label>
+                <select id="experience">
+                    <option value="debutant">Débutant</option>
+                    <option value="intermediaire">Intermédiaire</option>
+                    <option value="avance">Avancé</option>
+                    <option value="expert">Expert</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-success" style="width: 100%; padding: 18px; font-size: 18px;">
+                <i class="fas fa-play"></i> Commencer l'aventure
+            </button>
+        </form>
+    </div>
+
+    <!-- Page À propos -->
+    <div class="about-container" id="aboutPage">
+        <div class="about-content">
+            <h1>🏢 À propos d'INNOVTECH</h1>
+            
+            <p>Fondée en 2025 par le jeune et ambitieux développeur malien <strong>Luc Boubacar Koïta</strong>, INNOVTECH est une entreprise spécialisée dans le développement web et mobile.</p>
+            
+            <p>Animée par une vision novatrice, elle a pour mission de <strong>révolutionner la technologie en Afrique et dans le monde</strong>, en proposant des solutions numériques modernes, accessibles et performantes.</p>
+            
+            <div class="slogan">
+                « Ensemble, révolutionnons la technologie pour un meilleur futur »
+            </div>
+            
+            <p>Ce slogan incarne parfaitement son engagement : bâtir, avec ses partenaires et clients, un avenir technologique durable, créatif et tourné vers l'excellence.</p>
+            
+            <h2>🎯 Notre Mission</h2>
+            <p>Transformer le paysage technologique africain en développant des solutions innovantes qui répondent aux besoins locaux tout en respectant les standards internationaux.</p>
+            
+            <h2>🌟 Notre Vision</h2>
+            <p>Devenir le leader incontournable de l'innovation technologique en Afrique, en formant les talents locaux et en créant des opportunités durables.</p>
+            
+            <h2>🚀 Nos Valeurs</h2>
+            <p><strong>Excellence :</strong> Nous nous engageons à fournir des solutions de la plus haute qualité.</p>
+            <p><strong>Innovation :</strong> Nous repoussons constamment les limites de la technologie.</p>
+            <p><strong>Accessibilité :</strong> Nous rendons la technologie accessible à tous.</p>
+            <p><strong>Durabilité :</strong> Nous construisons pour l'avenir.</p>
+            
+            <div class="founder">
+                Fondée par Luc Boubacar Koïta - Développeur passionné et entrepreneur visionnaire
+            </div>
+            
+            <button class="btn btn-primary" onclick="showGame()" style="margin-top: 30px; width: 100%; padding: 15px;">
+                <i class="fas fa-gamepad"></i> Retour au jeu
+            </button>
+        </div>
+    </div>
+
+    <!-- Page du jeu -->
+    <div class="container" id="gamePage">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-keyboard"></i> INNOVTECH ProTyping Master
+            </div>
+            <p style="opacity: 0.9;">Jeu de dactylographie professionnel avec mains réalistes</p>
+            
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="showAbout()">
+                    <i class="fas fa-info-circle"></i> À propos
+                </button>
+                <button class="nav-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="wpm">0</div>
+                <div class="stat-label">Mots/min</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="accuracy">100%</div>
+                <div class="stat-label">Précision</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="wordsCompleted">0</div>
+                <div class="stat-label">Mots tapés</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="keyboard-section">
+                <div class="timer-section">
+                    <div class="timer-label">⏱️ Chronomètre</div>
+                    <div class="timer-display" id="timer">00:00</div>
+                    <div class="timer-controls">
+                        <button class="btn btn-success" id="startTimerBtn">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                        <button class="btn btn-warning" id="pauseTimerBtn">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="btn btn-danger" id="resetTimerBtn">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="level-section">
+                    <div class="level-display">Niveau <span id="level">1</span></div>
+                    <div class="level-progress">
+                        <div class="level-progress-bar" id="levelProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="level-reward" id="levelReward"></div>
+                </div>
+                
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">
+                    <i class="fas fa-keyboard"></i> Clavier Virtuel Réaliste
+                </h3>
+                <div class="keyboard" id="virtualKeyboard">
+                    <!-- Les mains réalistes seront ajoutées ici -->
+                </div>
+                
+                <div class="mode-selector">
+                    <h4><i class="fas fa-cog"></i> Type de contenu :</h4>
+                    <label>
+                        <input type="radio" name="contentType" value="words" checked> 
+                        <i class="fas fa-font"></i> Mots
+                    </label>
+                    <label>
+                        <input type="radio" name="contentType" value="sentences"> 
+                        <i class="fas fa-paragraph"></i> Phrases
+                    </label>
+                    <label>
+                        <input type="radio" name="contentType" value="paragraphs"> 
+                        <i class="fas fa-file-alt"></i> Paragraphes
+                    </label>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" id="startBtn">
+                        <i class="fas fa-play"></i> Démarrer
+                    </button>
+                    <button class="btn btn-danger" id="resetBtn">
+                        <i class="fas fa-redo"></i> Recommencer
+                    </button>
+                </div>
+            </div>
+
+            <div class="typing-section">
+                <div class="target-text" id="targetText">
+                    <div class="welcome-message">
+                        <i class="fas fa-hand-wave"></i>
+                        <h3>Bienvenue <span id="userNameDisplay"></span> !</h3>
+                        <p>Les mains réalistes montrent la bonne position</p>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Commencez à taper ici..." autocomplete="off" disabled>
+                </div>
+
+                <div class="share-section">
+                    <h3><i class="fas fa-share-alt"></i> Partager votre score</h3>
+                    <div class="share-buttons">
+                        <button class="btn btn-info" onclick="shareByEmail()">
+                            <i class="fas fa-envelope"></i> Par Email
+                        </button>
+                        <button class="btn btn-success" onclick="shareOnSocial()">
+                            <i class="fas fa-share"></i> Réseaux sociaux
+                        </button>
+                        <button class="btn btn-warning" onclick="exportStats()">
+                            <i class="fas fa-download"></i> Exporter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbox -->
+    <div class="chatbox-container">
+        <div class="chatbox-toggle" id="chatToggle">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="chatbox" id="chatbox">
+            <div class="chatbox-header">
+                <span><i class="fas fa-robot"></i> Assistant IA INNOVTECH</span>
+                <button class="chatbox-close" id="chatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbox-messages" id="chatMessages">
+                <div class="message bot-message">
+                    👋 Bonjour <span id="chatUserName"></span> ! Je suis l'assistant IA d'INNOVTECH. Je peux vous expliquer la dactylographie, répondre à vos questions techniques, ou vous encourager dans votre progression. Que puis-je faire pour vous ?
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <i class="fas fa-keyboard"></i> L'assistant IA écrit...
+            </div>
+            <div class="chatbox-input">
+                <input type="text" id="chatInput" placeholder="Posez-moi une question sur la dactylographie...">
+                <button id="chatSend">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de connaissances IA avancée
+        const knowledgeBase = {
+            dactylographie: {
+                definition: "La dactylographie est l'art de taper rapidement et précisément sur un clavier. Elle implique l'utilisation efficace de tous les doigts et une bonne posture. La dactylographie professionnelle utilise la méthode du touch typing, qui consiste à taper sans regarder le clavier.",
+                avantages: "La dactylographie améliore considérablement votre productivité, réduit la fatigue et permet une communication plus efficace dans le monde numérique. Elle développe également la coordination main-œil et la mémoire musculaire.",
+                debutant: "Pour débuter, concentrez-vous sur la posture correcte : dos droit, pieds à plat, bras parallèles au sol. Placez vos doigts sur la rangée de base (ASDF JKL;) et utilisez tous vos doigts de manière coordonnée.",
+                vitesse: "Un dactylographe professionnel tape généralement à plus de 60 mots par minute avec une précision de 95% ou plus. Le record mondial dépasse 200 mots par minute !",
+                postures: "Posture idéale : dos droit, épaules détendues, coudes à 90°, poignets droits, pieds à plat. Les mains doivent être légèrement inclinées vers le haut avec les doigts courbés.",
+                technique: "La technique du touch typing repose sur la mémorisation de la position des touches et le développement de la coordination main-œil."
+            },
+            
+            niveaux: {
+                1: "🎉 Félicitations ! Vous avez atteint le niveau 1. Continuez comme ça !",
+                2: "🌟 Bravo ! Niveau 2 débloqué ! Vous progressez rapidement !",
+                3: "🔥 Incroyable ! Niveau 3 atteint ! Vous devenez un expert !",
+                4: "🚀 Niveau 4 ! Vous êtes un véritable maître de la dactylographie !",
+                5: "🏆 Niveau 5 ! Vous êtes un champion !",
+                10: "💎 Niveau 10 ! Vous êtes un légende vivante de la dactylographie !",
+                20: "👑 Niveau 20 ! Vous êtes un dieu du clavier !",
+                50: "🌌 Niveau 50 ! Vous avez transcendé les limites de la dactylographie !",
+                100: "🌠 Niveau 100 ! Vous êtes un mythe vivant ! Félicitations !"
+            },
+            
+            encouragements: [
+                "Excellent travail ! Continuez comme ça !",
+                "Votre progression est impressionnante !",
+                "Vous tapez de mieux en mieux !",
+                "Bravo pour votre persévérance !",
+                "Vous maîtrisez parfaitement la technique !",
+                "Votre vitesse s'améliore constamment !",
+                "Continuez à pratiquer, vous êtes sur la bonne voie !",
+                "Félicitations pour cette belle précision !"
+            ]
+        };
+
+        // Base de données
+        const wordsDatabase = [
+            "chat", "soleil", "ordinateur", "clavier", "souris", "écran", "internet", 
+            "navigateur", "algorithme", "variable", "fonction", "boucle", "condition", 
+            "tableau", "objet", "méthode", "propriété", "paramètre", "retour", "appel",
+            "exécution", "compilation", "débogage", "test", "validation", "optimisation",
+            "performance", "mémoire", "processeur", "système", "opération", "résultat",
+            "affichage", "saisie", "interface", "utilisateur", "expérience", "design",
+            "réseau", "connexion", "protocole", "serveur", "client", "base", "données",
+            "dactylographie", "touch", "typing", "vitesse", "précision", "doigts", "mains",
+            "posture", "technique", "pratique", "entraînement", "progression", "niveau",
+            "innovation", "technologie", "développement", "programmation", "code", "logiciel"
+        ];
+
+        const sentences = [
+            "Le chat dort sur le canapé confortable",
+            "Le soleil brille dans le ciel bleu",
+            "L'ordinateur est un outil indispensable moderne",
+            "La programmation nécessite de la pratique constante",
+            "JavaScript est un langage de programmation puissant",
+            "La dactylographie améliore considérablement la productivité",
+            "Utilisez tous vos doigts pour une frappe efficace",
+            "La main virtuelle vous montre la bonne position des doigts",
+            "La posture correcte réduit la fatigue pendant le travail",
+            "La pratique régulière est la clé du succès en dactylographie"
+        ];
+
+        const paragraphs = [
+            "La dactylographie est l'art de taper rapidement et précisément sur un clavier. Elle implique l'utilisation efficace de tous les doigts et une bonne posture. La dactylographie professionnelle utilise la méthode du touch typing, qui consiste à taper sans regarder le clavier. Cette technique repose sur la mémorisation de la position des touches et le développement de la coordination main-œil.",
+            "Pour maîtriser la dactylographie, il est essentiel de pratiquer régulièrement avec des exercices ciblés. Commencez par la posture correcte : dos droit, pieds à plat, bras parallèles au sol. Placez vos doigts sur la rangée de base (ASDF JKL;) et utilisez tous vos doigts de manière coordonnée. La patience et la persévérance sont les clés du succès.",
+            "La dactylographie professionnelle offre de nombreux avantages : elle améliore considérablement votre productivité, réduit la fatigue et permet une communication plus efficace dans le monde numérique. Elle développe également la coordination main-œil et la mémoire musculaire. Un dactylographe professionnel tape généralement à plus de 60 mots par minute avec une précision de 95% ou plus."
+        ];
+
+        // Configuration du clavier
+        const keyboardLayout = [
+            ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+            ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
+            ['Caps', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter'],
+            ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift'],
+            ['Space']
+        ];
+
+        // Mapping touches vers doigts
+        const fingerMapping = {
+            // Main gauche
+            '`': 'L5', '1': 'L5', '2': 'L4', '3': 'L3', '4': 'L2', '5': 'L1',
+            'q': 'L5', 'w': 'L4', 'e': 'L3', 'r': 'L2', 't': 'L1',
+            'a': 'L5', 's': 'L4', 'd': 'L3', 'f': 'L2', 'g': 'L1',
+            'z': 'L5', 'x': 'L4', 'c': 'L3', 'v': 'L2', 'b': 'L1',
+            
+            // Main droite
+            '6': 'R1', '7': 'R2', '8': 'R3', '9': 'R4', '0': 'R5',
+            'y': 'R1', 'u': 'R2', 'i': 'R3', 'o': 'R4', 'p': 'R5',
+            'h': 'R1', 'j': 'R2', 'k': 'R3', 'l': 'R4', ';': 'R5',
+            'n': 'R1', 'm': 'R2', ',': 'R3', '.': 'R4', '/': 'R5',
+            
+            // Touches spéciales
+            'Backspace': 'R5',
+            'Enter': 'R5',
+            'Shift': 'L5',
+            'Space': 'R1'
+        };
+
+        // Variables globales
+        let currentUser = null;
+        let currentText = "";
+        let currentIndex = 0;
+        let correctChars = 0;
+        let totalChars = 0;
+        let wordsCompleted = 0;
+        let gameActive = false;
+        let contentType = "words";
+        let startTime = null;
+        let allUsers = JSON.parse(localStorage.getItem('innovtechUsers') || '[]');
+        
+        // Variables chronomètre
+        let timerInterval = null;
+        let seconds = 0;
+        let timerRunning = false;
+        
+        // Variables niveaux
+        let level = 1;
+        let levelProgress = 0;
+
+        // Éléments DOM
+        const authPage = document.getElementById('authPage');
+        const aboutPage = document.getElementById('aboutPage');
+        const gamePage = document.getElementById('gamePage');
+        const targetTextElement = document.getElementById('targetText');
+        const userInput = document.getElementById('userInput');
+        const virtualKeyboard = document.getElementById('virtualKeyboard');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const chatbox = document.getElementById('chatbox');
+        const chatToggle = document.getElementById('chatToggle');
+        const chatClose = document.getElementById('chatClose');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const timerDisplay = document.getElementById('timer');
+        const startTimerBtn = document.getElementById('startTimerBtn');
+        const pauseTimerBtn = document.getElementById('pauseTimerBtn');
+        const resetTimerBtn = document.getElementById('resetTimerBtn');
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem('innovtechCurrentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showGame();
+            } else {
+                showAuth();
+            }
+            
+            createVirtualKeyboard();
+            setupEventListeners();
+            setupChatbox();
+            updateStats();
+        });
+
+        // Afficher authentification
+        function showAuth() {
+            authPage.style.display = 'block';
+            aboutPage.style.display = 'none';
+            gamePage.style.display = 'none';
+        }
+
+        // Afficher le jeu
+        function showGame() {
+            authPage.style.display = 'none';
+            aboutPage.style.display = 'none';
+            gamePage.style.display = 'block';
+            
+            if (currentUser) {
+                document.getElementById('userNameDisplay').textContent = currentUser.firstName;
+                document.getElementById('chatUserName').textContent = currentUser.firstName;
+            }
+        }
+
+        // Afficher page À propos
+        function showAbout() {
+            authPage.style.display = 'none';
+            gamePage.style.display = 'none';
+            aboutPage.style.display = 'block';
+        }
+
+        // Déconnexion
+        function logout() {
+            localStorage.removeItem('innovtechCurrentUser');
+            currentUser = null;
+            resetGame();
+            resetTimer();
+            showAuth();
+        }
+
+        // Création du clavier virtuel avec mains réalistes
+        function createVirtualKeyboard() {
+            virtualKeyboard.innerHTML = '';
+            
+            // Ajouter les mains réalistes
+            const handsOverlay = document.createElement('div');
+            handsOverlay.className = 'hands-overlay';
+            handsOverlay.innerHTML = `
+                <div class="hand left" id="leftHand">
+                    <div class="palm"></div>
+                    <div class="fingers">
+                        <div class="finger" id="fingerL1"></div>
+                        <div class="finger" id="fingerL2"></div>
+                        <div class="finger" id="fingerL3"></div>
+                        <div class="finger" id="fingerL4"></div>
+                        <div class="finger" id="fingerL5"></div>
+                    </div>
+                    <div class="thumb" id="thumbL"></div>
+                </div>
+                <div class="hand right" id="rightHand">
+                    <div class="palm"></div>
+                    <div class="fingers">
+                        <div class="finger" id="fingerR1"></div>
+                        <div class="finger" id="fingerR2"></div>
+                        <div class="finger" id="fingerR3"></div>
+                        <div class="finger" id="fingerR4"></div>
+                        <div class="finger" id="fingerR5"></div>
+                    </div>
+                    <div class="thumb" id="thumbR"></div>
+                </div>
+            `;
+            virtualKeyboard.appendChild(handsOverlay);
+            
+            // Créer les rangées de touches
+            keyboardLayout.forEach((row, rowIndex) => {
+                const rowElement = document.createElement('div');
+                rowElement.className = 'keyboard-row';
+                
+                row.forEach((key, keyIndex) => {
+                    const keyElement = document.createElement('div');
+                    keyElement.className = 'key';
+                    keyElement.textContent = key;
+                    keyElement.dataset.key = key;
+                    keyElement.id = `key-${rowIndex}-${keyIndex}`;
+                    
+                    if (key === 'Space') {
+                        keyElement.classList.add('space');
+                    } else if (['Tab', 'Caps', 'Shift', 'Enter', 'Backspace'].includes(key)) {
+                        keyElement.classList.add(key.toLowerCase());
+                    }
+                    
+                    rowElement.appendChild(keyElement);
+                });
+                
+                virtualKeyboard.appendChild(rowElement);
+            });
+        }
+
+        // Configuration des événements
+        function setupEventListeners() {
+            // Formulaire d'authentification
+            document.getElementById('userAuthForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newUser = {
+                    id: Date.now(),
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    birthDate: document.getElementById('birthDate').value,
+                    birthPlace: document.getElementById('birthPlace').value,
+                    phone: document.getElementById('phone').value,
+                    occupation: document.getElementById('occupation').value,
+                    experience: document.getElementById('experience').value,
+                    registrationDate: new Date().toISOString()
+                };
+                
+                // Vérifier si l'utilisateur existe déjà
+                const existingUserIndex = allUsers.findIndex(u => u.email === newUser.email);
+                if (existingUserIndex !== -1) {
+                    allUsers[existingUserIndex] = {...allUsers[existingUserIndex], ...newUser};
+                } else {
+                    allUsers.push(newUser);
+                }
+                
+                localStorage.setItem('innovtechUsers', JSON.stringify(allUsers));
+                currentUser = newUser;
+                localStorage.setItem('innovtechCurrentUser', JSON.stringify(currentUser));
+                
+                showGame();
+            });
+            
+            // Boutons du jeu
+            startBtn.addEventListener('click', startGame);
+            resetBtn.addEventListener('click', resetGame);
+            
+            // Input utilisateur
+            userInput.addEventListener('input', handleUserInput);
+            
+            // Suivi des frappes pour les mains virtuelles
+            document.addEventListener('keydown', function(e) {
+                if (gameActive) {
+                    updateVirtualKeyboard(e.key);
+                    animateFinger(e.key);
+                }
+            });
+            
+            document.addEventListener('keyup', function(e) {
+                if (gameActive) {
+                    setTimeout(() => updateVirtualKeyboard(), 100);
+                    resetFingerAnimation(e.key);
+                }
+            });
+            
+            // Sélection du type de contenu
+            document.querySelectorAll('input[name="contentType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    contentType = this.value;
+                });
+            });
+            
+            // Chronomètre
+            startTimerBtn.addEventListener('click', startTimer);
+            pauseTimerBtn.addEventListener('click', pauseTimer);
+            resetTimerBtn.addEventListener('click', resetTimer);
+        }
+
+        // Configuration du chatbox
+        function setupChatbox() {
+            chatToggle.addEventListener('click', function() {
+                chatbox.style.display = chatbox.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            chatClose.addEventListener('click', function() {
+                chatbox.style.display = 'none';
+            });
+            
+            chatSend.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+        // Envoyer un message dans le chat
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage(message, 'user');
+                chatInput.value = '';
+                
+                typingIndicator.style.display = 'block';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                setTimeout(() => {
+                    const response = generateIntelligentResponse(message);
+                    typingIndicator.style.display = 'none';
+                    addMessage(response, 'bot');
+                }, 1000 + Math.random() * 1000);
+            }
+        }
+
+        // Générer une réponse IA intelligente
+        function generateIntelligentResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // Questions sur la dactylographie
+            if (message.includes('dactylographie') || message.includes('taper') || message.includes('frappe')) {
+                return knowledgeBase.dactylographie.definition + " " + knowledgeBase.dactylographie.avantages;
+            }
+            
+            if (message.includes('vitesse') || message.includes('rapide') || message.includes('mots')) {
+                return knowledgeBase.dactylographie.vitesse + " Votre vitesse actuelle est de " + document.getElementById('wpm').textContent + " mots/minute.";
+            }
+            
+            if (message.includes('posture') || message.includes('position') || message.includes('main')) {
+                return knowledgeBase.dactylographie.postures + " Regardez bien les mains réalistes sur le clavier pour apprendre la bonne position.";
+            }
+            
+            if (message.includes('technique') || message.includes('touch') || message.includes('aveugle')) {
+                return knowledgeBase.dactylographie.technique;
+            }
+            
+            if (message.includes('niveau') || message.includes('progression')) {
+                return "Vous êtes actuellement au niveau " + level + ". Continuez à pratiquer pour atteindre le prochain niveau !";
+            }
+            
+            if (message.includes('encourage') || message.includes('bien') || message.includes('continue')) {
+                return knowledgeBase.encouragements[Math.floor(Math.random() * knowledgeBase.encouragements.length)] + " Votre score est de " + document.getElementById('score').textContent + " points.";
+            }
+            
+            // Réponses par défaut
+            const defaultResponses = [
+                "La dactylographie est une compétence essentielle dans le monde moderne. Continuez à pratiquer régulièrement !",
+                "Les mains réalistes sur le clavier vous montrent exactement comment positionner vos doigts. Observez-les bien !",
+                "La pratique quotidienne est la clé du succès. Même 15 minutes par jour font une grande différence !",
+                "Votre progression est remarquable ! Continuez comme ça et vous atteindrez bientôt le prochain niveau.",
+                "Luc Boubacar Koïta, fondateur d'INNOVTECH, a créé cette technologie pour révolutionner l'apprentissage de la dactylographie.",
+                "Utilisez le chronomètre pour vous challenger et améliorer votre vitesse de frappe."
+            ];
+            
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // Ajouter un message au chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Génération de contenu
+        function generateContent() {
+            switch(contentType) {
+                case "words":
+                    const wordCount = 5 + Math.floor(Math.random() * 8);
+                    let words = [];
+                    for (let i = 0; i < wordCount; i++) {
+                        words.push(wordsDatabase[Math.floor(Math.random() * wordsDatabase.length)]);
+                    }
+                    return words.join(" ");
+                case "sentences":
+                    return sentences[Math.floor(Math.random() * sentences.length)];
+                case "paragraphs":
+                    return paragraphs[Math.floor(Math.random() * paragraphs.length)];
+                default:
+                    return wordsDatabase[Math.floor(Math.random() * wordsDatabase.length)];
+            }
+        }
+
+        // Animer le doigt correspondant
+        function animateFinger(key) {
+            const fingerId = fingerMapping[key.toLowerCase()] || fingerMapping[key.toUpperCase()];
+            if (fingerId) {
+                const fingerElement = document.getElementById(`finger${fingerId}`);
+                if (fingerElement) {
+                    fingerElement.classList.add('active');
+                }
+            }
+        }
+
+        // Réinitialiser l'animation du doigt
+        function resetFingerAnimation(key) {
+            const fingerId = fingerMapping[key.toLowerCase()] || fingerMapping[key.toUpperCase()];
+            if (fingerId) {
+                const fingerElement = document.getElementById(`finger${fingerId}`);
+                if (fingerElement) {
+                    fingerElement.classList.remove('active');
+                }
+            }
+        }
+
+        // Chronomètre
+        function startTimer() {
+            if (!timerRunning) {
+                timerRunning = true;
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            if (timerRunning) {
+                timerRunning = false;
+                clearInterval(timerInterval);
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            seconds = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Système de niveaux
+        function updateLevel() {
+            const newLevel = Math.floor(wordsCompleted / 10) + 1;
+            if (newLevel > level) {
+                level = newLevel;
+                document.getElementById('level').textContent = level;
+                
+                // Afficher récompense pour niveaux spéciaux
+                if (knowledgeBase.niveaux[level]) {
+                    document.getElementById('levelReward').textContent = knowledgeBase.niveaux[level];
+                    setTimeout(() => {
+                        document.getElementById('levelReward').textContent = '';
+                    }, 5000);
+                }
+            }
+            
+            // Mettre à jour la barre de progression
+            levelProgress = (wordsCompleted % 10) * 10;
+            document.getElementById('levelProgress').style.width = levelProgress + '%';
+        }
+
+        // Partager par email
+        function shareByEmail() {
+            if (!currentUser) return;
+            
+            const subject = 'Mon score INNOVTECH ProTyping Master';
+            const body = `Bonjour,\n\nJe suis ${currentUser.firstName} ${currentUser.lastName} et je viens d'atteindre un score de ${document.getElementById('score').textContent} points avec ${document.getElementById('wpm').textContent} mots/minute et ${document.getElementById('accuracy').textContent} de précision sur INNOVTECH ProTyping Master !\n\nNiveau atteint : ${level}\nMots tapés : ${wordsCompleted}\nTemps : ${timerDisplay.textContent}\n\nRejoignez-moi pour améliorer votre dactylographie !\n\nCordialement,\n${currentUser.firstName}`;
+            
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+        // Partager sur les réseaux sociaux
+        function shareOnSocial() {
+            const text = `🚀 J'ai atteint le niveau ${level} avec ${document.getElementById('score').textContent} points sur INNOVTECH ProTyping Master ! Relevez mon défi ! #Dactylographie #INNOVTECH`;
+            const url = window.location.href;
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            window.open(shareUrl, '_blank');
+        }
+
+        // Exporter les statistiques
+        function exportStats() {
+            if (!currentUser) return;
+            
+            const stats = {
+                utilisateur: {
+                    nom: currentUser.firstName + ' ' + currentUser.lastName,
+                    email: currentUser.email,
+                    date_naissance: currentUser.birthDate,
+                    lieu_naissance: currentUser.birthPlace,
+                    telephone: currentUser.phone,
+                    profession: currentUser.occupation,
+                    experience: currentUser.experience
+                },
+                performance: {
+                    score: document.getElementById('score').textContent,
+                    mots_par_minute: document.getElementById('wpm').textContent,
+                    precision: document.getElementById('accuracy').textContent,
+                    mots_tapes: wordsCompleted,
+                    niveau: level,
+                    temps: timerDisplay.textContent,
+                    date: new Date().toLocaleString('fr-FR')
+                }
+            };
+            
+            const dataStr = JSON.stringify(stats, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `innovtech_stats_${currentUser.firstName}_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        // Démarrer le jeu
+        function startGame() {
+            if (gameActive) return;
+            
+            gameActive = true;
+            currentIndex = 0;
+            correctChars = 0;
+            totalChars = 0;
+            wordsCompleted = 0;
+            startTime = new Date();
+            
+            // Démarrer le chronomètre automatiquement
+            startTimer();
+            
+            currentText = generateContent();
+            displayText();
+            
+            userInput.disabled = false;
+            userInput.value = '';
+            userInput.focus();
+        }
+
+        // Réinitialiser le jeu
+        function resetGame() {
+            gameActive = false;
+            currentIndex = 0;
+            correctChars = 0;
+            totalChars = 0;
+            wordsCompleted = 0;
+            level = 1;
+            levelProgress = 0;
+            
+            targetTextElement.innerHTML = `
+                <div class="welcome-message">
+                    <i class="fas fa-hand-wave"></i>
+                    <h3>Bienvenue <span id="userNameDisplay">${currentUser ? currentUser.firstName : ''}</span> !</h3>
+                    <p>Les mains réalistes montrent la bonne position</p>
+                </div>
+            `;
+            userInput.disabled = true;
+            userInput.value = '';
+            
+            document.getElementById('level').textContent = level;
+            document.getElementById('levelProgress').style.width = levelProgress + '%';
+            document.getElementById('levelReward').textContent = '';
+            
+            updateStats();
+            updateVirtualKeyboard();
+        }
+
+        // Afficher le texte cible
+        function displayText() {
+            targetTextElement.innerHTML = '';
+            for (let i = 0; i < currentText.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = currentText[i];
+                if (i === currentIndex) {
+                    span.classList.add('current');
+                } else if (i < currentIndex) {
+                    span.classList.add('correct');
+                }
+                targetTextElement.appendChild(span);
+            }
+        }
+
+                // Gérer la saisie utilisateur
+                function handleUserInput(e) {
+                    if (!gameActive) return;
+                    
+                    const value = e.target.value;
+                    const lastChar = value.slice(-1);
+                    
+                    updateVirtualKeyboard(lastChar);
+                    animateFinger(lastChar);
+                    
+                    if (currentIndex < currentText.length) {
+                        totalChars++;
+                        if (lastChar === currentText[currentIndex]) {
+                            correctChars++;
+                            currentIndex++;
+                        } else {
+                            // incorrect but still counts toward total chars
+                        }
+                        
+                        displayText();
+                        
+                        if (currentIndex >= currentText.length) {
+                            // Texte terminé : incrémenter et préparer le suivant
+                            wordsCompleted++;
+                            updateLevel();
+                            
+                            // Mettre à jour les statistiques visibles
+                            updateStats();
+                            
+                            // Générer un nouveau contenu et réinitialiser l'index
+                            currentText = generateContent();
+                            currentIndex = 0;
+                            displayText();
+                            
+                            // Réinitialiser l'input pour le prochain passage
+                            userInput.value = '';
+                            userInput.focus();
+                        }
+                    } else {
+                        // Si l'utilisateur supprime des caractères (backspace), ajuster l'index
+                        if (value.length < currentIndex) {
+                            currentIndex = value.length;
+                            displayText();
+                        }
+                    }
+                    
+                    // Mettre à jour les statistiques après chaque saisie
+                    updateStats();
+                }
+        
+                // Met à jour les statistiques à l'écran (WPM, précision, score, mots tapés)
+                function updateStats() {
+                    const elapsedSeconds = seconds; // seconds est mis à jour par le chronomètre global
+                    const minutes = elapsedSeconds / 60 || 0;
+                    
+                    let wpmValue = 0;
+                    if (minutes > 0) {
+                        // WPM estimé sur la base de correctChars (5 chars = 1 mot en moyenne)
+                        wpmValue = Math.round((correctChars / 5) / minutes);
+                    } else {
+                        wpmValue = 0;
+                    }
+                    document.getElementById('wpm').textContent = isFinite(wpmValue) ? wpmValue : 0;
+                    
+                    const accuracyValue = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+                    document.getElementById('accuracy').textContent = accuracyValue + '%';
+                    
+                    // Score simple : points = correctChars (vous pouvez ajuster la formule)
+                    const scoreValue = Math.max(0, correctChars);
+                    document.getElementById('score').textContent = scoreValue;
+                    
+                    document.getElementById('wordsCompleted').textContent = wordsCompleted;
+                }
+        
+                // Met à jour l'affichage du clavier virtuel (ajoute/enlève la classe 'active')
+                function updateVirtualKeyboard(key) {
+                    // Retirer toute mise en surbrillance active
+                    document.querySelectorAll('#virtualKeyboard .key.active').forEach(k => k.classList.remove('active'));
+                    if (!key) return;
+        
+                    let normalized = key;
+        
+                    // Normalisations courantes
+                    if (normalized === ' ') normalized = 'Space';
+                    if (normalized === 'Spacebar') normalized = 'Space';
+                    if (normalized.toLowerCase() === 'capslock') normalized = 'Caps';
+                    if (normalized === 'Escape') normalized = 'Esc';
+        
+                    // Chercher élément correspondant (dataset key)
+                    let keyEl = document.querySelector(`#virtualKeyboard .key[data-key="${normalized}"]`);
+                    if (!keyEl) {
+                        // essayer en minuscules/majuscules pour les lettres
+                        keyEl = document.querySelector(`#virtualKeyboard .key[data-key="${normalized.toLowerCase()}"]`) ||
+                                document.querySelector(`#virtualKeyboard .key[data-key="${normalized.toUpperCase()}"]`);
+                    }
+                    if (keyEl) {
+                        keyEl.classList.add('active');
+                    }
+                }
+        
+            </script>
+        </body>
+        </html>
