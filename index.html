@@ -432,6 +432,11 @@
             background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
             color: white;
         }
+        .pause-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+            color: white !important;
+            animation: pulseOrange 2s infinite;
+        }
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
@@ -895,6 +900,39 @@
             70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
             100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
         }
+        @keyframes pulseOrange {
+            0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(243, 156, 18, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); }
+        }
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.3s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .key-hint {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         @media (max-width: 768px) {
             .game-area {
                 flex-direction: column;
@@ -1157,6 +1195,9 @@
                     <button class="btn btn-danger" id="resetBtn">
                         <i class="fas fa-redo"></i> Recommencer
                     </button>
+                    <button class="btn pause-btn" id="pauseBtn">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
                 </div>
             </div>
             <div class="typing-section">
@@ -1418,6 +1459,11 @@
         let userAchievements = JSON.parse(localStorage.getItem('innovtechAchievements') || '[]');
         let chatHistory = JSON.parse(localStorage.getItem('innovtechChatHistory') || '[]');
         
+        // Variables pour la pause
+        let isPaused = false;
+        let pausedTime = 0;
+        let pauseStartTime = null;
+        
         // =============================================
         // ÉLÉMENTS DOM
         // =============================================
@@ -1537,16 +1583,21 @@
             
             document.getElementById('startBtn').addEventListener('click', startGame);
             document.getElementById('resetBtn').addEventListener('click', resetGame);
+            document.getElementById('pauseBtn').addEventListener('click', togglePause);
             userInput.addEventListener('input', handleUserInput);
             document.addEventListener('keydown', function(e) {
-                if (gameActive) {
+                if (gameActive && !isPaused) {
                     updateAZERTYKeyboard(e.key);
                     animateAZERTYFinger(e.key);
                     moveHands(e.key);
                 }
+                // Pause avec ESC
+                if (e.key === 'Escape' && gameActive) {
+                    togglePause();
+                }
             });
             document.addEventListener('keyup', function(e) {
-                if (gameActive) {
+                if (gameActive && !isPaused) {
                     setTimeout(() => updateAZERTYKeyboard(), 100);
                     resetAZERTYFingerAnimation(e.key);
                 }
@@ -1559,6 +1610,13 @@
             document.getElementById('startTimerBtn').addEventListener('click', startTimer);
             document.getElementById('pauseTimerBtn').addEventListener('click', pauseTimer);
             document.getElementById('resetTimerBtn').addEventListener('click', resetTimer);
+            
+            // Pause automatique quand la fenêtre perd le focus
+            window.addEventListener('blur', function() {
+                if (gameActive && !isPaused) {
+                    togglePause();
+                }
+            });
         }
         
         function showWelcomeMessage() {
@@ -1693,17 +1751,109 @@
         function moveHands(key) {
             const position = keyPositions[key.toLowerCase()] || keyPositions[key.toUpperCase()];
             if (!position) return;
-            const leftHand = document.getElementById('leftHand');
-            const rightHand = document.getElementById('rightHand');
-            // Déterminer quelle main bouger
-            if (key.toLowerCase() in fingerMappingAZERTY) {
-                const handId = fingerMappingAZERTY[key.toLowerCase()].startsWith('L') ? 'leftHand' : 'rightHand';
-                const handElement = document.getElementById(handId);
-                if (handElement) {
-                    handElement.style.left = `${position.x}px`;
-                    handElement.style.top = `${position.y}px`;
-                    handElement.style.transform = `rotate(${position.rotation}deg)`;
+            
+            const fingerId = fingerMappingAZERTY[key.toLowerCase()] || fingerMappingAZERTY[key.toUpperCase()];
+            if (!fingerId) return;
+            
+            const isLeftHand = fingerId.startsWith('L');
+            const handElement = isLeftHand ? document.getElementById('leftHand') : document.getElementById('rightHand');
+            
+            if (handElement) {
+                // Animation plus fluide
+                handElement.style.transition = 'all 0.3s ease';
+                handElement.style.left = `${position.x}px`;
+                handElement.style.top = `${position.y}px`;
+                handElement.style.transform = `rotate(${position.rotation}deg)`;
+                
+                // Ajouter un indicateur visuel sur la touche
+                showKeyHint(key, position);
+            }
+        }
+        
+        function showKeyHint(key, position) {
+            // Supprimer les hints existants
+            document.querySelectorAll('.key-hint').forEach(el => el.remove());
+            
+            const hint = document.createElement('div');
+            hint.className = 'key-hint';
+            hint.textContent = key.toUpperCase();
+            hint.style.left = `${position.x + 25}px`;
+            hint.style.top = `${position.y - 30}px`;
+            
+            document.querySelector('.keyboard-realiste').appendChild(hint);
+            
+            // Supprimer après 1 seconde
+            setTimeout(() => {
+                if (hint.parentElement) {
+                    hint.remove();
                 }
+            }, 1000);
+        }
+        
+        // =============================================
+        // SYSTÈME DE PAUSE
+        // =============================================
+        function togglePause() {
+            if (!gameActive) return;
+            
+            isPaused = !isPaused;
+            
+            if (isPaused) {
+                pauseStartTime = Date.now();
+                pauseTimer();
+                pauseIndividualTimer();
+                showPauseOverlay();
+                document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play"></i> Reprendre';
+            } else {
+                // Calculer le temps de pause pour ajuster le chronomètre
+                if (pauseStartTime) {
+                    pausedTime += Date.now() - pauseStartTime;
+                    pauseStartTime = null;
+                }
+                startTimer();
+                startIndividualTimer();
+                hidePauseOverlay();
+                document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                userInput.focus();
+            }
+        }
+        
+        function showPauseOverlay() {
+            const overlay = document.createElement('div');
+            overlay.id = 'pauseOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                color: white;
+                font-size: 24px;
+                text-align: center;
+            `;
+            overlay.innerHTML = `
+                <div style="margin-bottom: 30px;">
+                    <i class="fas fa-pause-circle" style="font-size: 60px; margin-bottom: 20px;"></i>
+                    <h2>Partie en pause</h2>
+                    <p>Prenez votre temps, nous vous attendons !</p>
+                </div>
+                <button onclick="togglePause()" class="btn btn-success" style="padding: 15px 30px; font-size: 18px;">
+                    <i class="fas fa-play"></i> Reprendre
+                </button>
+            `;
+            document.body.appendChild(overlay);
+        }
+        
+        function hidePauseOverlay() {
+            const overlay = document.getElementById('pauseOverlay');
+            if (overlay) {
+                overlay.remove();
             }
         }
         
@@ -1727,9 +1877,21 @@
             userInput.focus();
             // Afficher le chronomètre individuel
             individualTimerSection.style.display = 'block';
+            // Réinitialiser la pause
+            isPaused = false;
+            pausedTime = 0;
+            pauseStartTime = null;
+            hidePauseOverlay();
+            document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
         }
         
         function resetGame() {
+            // Nettoyer la pause si active
+            if (isPaused) {
+                isPaused = false;
+                hidePauseOverlay();
+            }
+            
             if (gameActive) {
                 saveSession();
             }
@@ -1740,6 +1902,9 @@
             wordsCompleted = 0;
             level = 1;
             levelProgress = 0;
+            pausedTime = 0;
+            pauseStartTime = null;
+            
             // Arrêter les chronomètres
             pauseTimer();
             pauseIndividualTimer();
@@ -1798,7 +1963,7 @@
         }
         
         function handleUserInput(e) {
-            if (!gameActive) return;
+            if (!gameActive || isPaused) return;
             const value = e.target.value;
             const lastChar = value.slice(-1);
             updateAZERTYKeyboard(lastChar);
@@ -1842,12 +2007,33 @@
             if (minutes > 0) {
                 wpmValue = Math.round((correctChars / 5) / minutes);
             }
-            document.getElementById('wpm').textContent = isFinite(wpmValue) ? wpmValue : 0;
+            animateNumber(document.getElementById('wpm'), wpmValue);
             const accuracyValue = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
-            document.getElementById('accuracy').textContent = accuracyValue + '%';
+            animateNumber(document.getElementById('accuracy'), accuracyValue);
+            
             const scoreValue = Math.max(0, correctChars * 2 + wordsCompleted * 10);
-            document.getElementById('score').textContent = scoreValue;
-            document.getElementById('wordsCompleted').textContent = wordsCompleted;
+            animateNumber(document.getElementById('score'), scoreValue);
+            animateNumber(document.getElementById('wordsCompleted'), wordsCompleted);
+        }
+        
+        function animateNumber(element, newValue) {
+            const oldValue = parseInt(element.textContent) || 0;
+            const duration = 500;
+            const startTime = Date.now();
+            
+            const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const currentValue = Math.round(oldValue + (newValue - oldValue) * progress);
+                element.textContent = currentValue;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
         }
         
         // =============================================
@@ -2292,6 +2478,13 @@ ${currentUser.firstName}`;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
         }
         
+        function pauseIndividualTimer() {
+            if (individualTimerRunning) {
+                individualTimerRunning = false;
+                clearInterval(individualTimerInterval);
+            }
+        }
+        
         function handleTimeExpired() {
             // Désactiver l'entrée utilisateur
             userInput.disabled = true;
@@ -2345,4 +2538,3 @@ ${currentUser.firstName}`;
     </script>
 </body>
 </html>
-
