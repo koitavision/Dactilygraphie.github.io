@@ -1,3 +1,6 @@
+
+
+html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -430,6 +433,10 @@
         }
         .btn-info {
             background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
             color: white;
         }
         .pause-btn {
@@ -933,6 +940,123 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        /* Profil utilisateur */
+        .profile-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            display: none;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            border: 4px solid #ecf0f1;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .profile-stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .profile-stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .profile-stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        /* Paramètres */
+        .settings-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            display: none;
+        }
+        .settings-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .settings-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .setting-item {
+            margin-bottom: 20px;
+        }
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .color-picker {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .color-option.selected {
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+        .theme-preview {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: white;
+            text-align: center;
+        }
+        /* Graphique */
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin: 20px 0;
+        }
         @media (max-width: 768px) {
             .game-area {
                 flex-direction: column;
@@ -983,7 +1107,7 @@
             body {
                 padding: 10px;
             }
-            .auth-container, .about-container, .container {
+            .auth-container, .about-container, .container, .profile-container, .settings-container {
                 padding: 20px;
                 margin: 15px auto;
             }
@@ -1081,6 +1205,109 @@
             </button>
         </div>
     </div>
+    <!-- Profil utilisateur -->
+    <div class="profile-container" id="profilePage">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">LK</div>
+            <h1 id="profileName">Luc Boubacar Koïta</h1>
+            <p id="profileEmail">luc.koita@example.com</p>
+            <p id="profileExperience">Débutant</p>
+        </div>
+        <div class="profile-stats">
+            <div class="profile-stat-card">
+                <div class="profile-stat-value" id="profileLevel">1</div>
+                <div class="profile-stat-label">Niveau</div>
+            </div>
+            <div class="profile-stat-card">
+                <div class="profile-stat-value" id="profileBestWpm">0</div>
+                <div class="profile-stat-label">Meilleur MPM</div>
+            </div>
+            <div class="profile-stat-card">
+                <div class="profile-stat-value" id="profileBestAccuracy">100%</div>
+                <div class="profile-stat-label">Meilleure Précision</div>
+            </div>
+            <div class="profile-stat-card">
+                <div class="profile-stat-value" id="profileSessions">0</div>
+                <div class="profile-stat-label">Sessions</div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="progressChart" height="200"></canvas>
+        </div>
+        <button class="btn btn-secondary" onclick="showGame()" style="width: 100%; margin-top: 20px;">
+            <i class="fas fa-arrow-left"></i> Retour au jeu
+        </button>
+    </div>
+    <!-- Paramètres -->
+    <div class="settings-container" id="settingsPage">
+        <h1><i class="fas fa-cog"></i> Paramètres</h1>
+        <div class="settings-section">
+            <h3><i class="fas fa-palette"></i> Personnalisation</h3>
+            <div class="setting-item">
+                <label>Thème principal</label>
+                <div class="color-picker">
+                    <div class="color-option selected" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);" data-theme="blue"></div>
+                    <div class="color-option" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);" data-theme="dark"></div>
+                    <div class="color-option" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);" data-theme="red"></div>
+                    <div class="color-option" style="background: linear-gradient(135deg, #27ae60 0%, #219653 100%);" data-theme="green"></div>
+                    <div class="color-option" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);" data-theme="purple"></div>
+                </div>
+                <div class="theme-preview" id="themePreview">
+                    <p>Aperçu du thème sélectionné</p>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label for="keyboardLayout"><i class="fas fa-keyboard"></i> Disposition du clavier</label>
+                <select id="keyboardLayout" class="form-control">
+                    <option value="azerty">AZERTY (Français)</option>
+                    <option value="qwerty">QWERTY (Anglais)</option>
+                    <option value="qwertz">QWERTZ (Allemand)</option>
+                </select>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3><i class="fas fa-bell"></i> Notifications</h3>
+            <div class="setting-item">
+                <label>
+                    <input type="checkbox" id="notificationsEnabled" checked> 
+                    Activer les notifications
+                </label>
+            </div>
+            <div class="setting-item">
+                <label>
+                    <input type="checkbox" id="achievementNotifications" checked> 
+                    Notifications de récompenses
+                </label>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3><i class="fas fa-user"></i> Informations personnelles</h3>
+            <div class="form-group">
+                <label for="editFirstName"><i class="fas fa-user"></i> Prénom</label>
+                <input type="text" id="editFirstName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editLastName"><i class="fas fa-user-tag"></i> Nom</label>
+                <input type="text" id="editLastName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editEmail"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="editEmail" class="form-control">
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
+            <button class="btn btn-danger" onclick="resetAccount()">
+                <i class="fas fa-trash"></i> Réinitialiser le compte
+            </button>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()" style="width: 100%; margin-top: 20px;">
+            <i class="fas fa-save"></i> Enregistrer les modifications
+        </button>
+        <button class="btn btn-secondary" onclick="showGame()" style="width: 100%; margin-top: 10px;">
+            <i class="fas fa-arrow-left"></i> Retour au jeu
+        </button>
+    </div>
     <!-- Page du jeu -->
     <div class="container" id="gamePage">
         <div class="header">
@@ -1092,6 +1319,12 @@
             </div>
             <p id="timeOfDayMessage" style="opacity: 0.9;"></p>
             <div class="nav-buttons">
+                <button class="nav-btn" onclick="showProfile()">
+                    <i class="fas fa-user"></i> Profil
+                </button>
+                <button class="nav-btn" onclick="showSettings()">
+                    <i class="fas fa-cog"></i> Paramètres
+                </button>
                 <button class="nav-btn" onclick="showAbout()">
                     <i class="fas fa-info-circle"></i> À propos
                 </button>
@@ -1351,6 +1584,15 @@
             ['Ctrl', 'Alt', ' ', 'Alt', 'Ctrl']
         ];
         
+        // CLAVIER QWERTY
+        const qwertyLayout = [
+            ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+            ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
+            ['Caps', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter'],
+            ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift'],
+            ['Ctrl', 'Alt', ' ', 'Alt', 'Ctrl']
+        ];
+        
         // Mapping des doigts pour AZERTY
         const fingerMappingAZERTY = {
             // Main gauche
@@ -1363,6 +1605,22 @@
             'y': 'R1', 'u': 'R2', 'i': 'R3', 'o': 'R4', 'p': 'R5',
             'h': 'R1', 'j': 'R2', 'k': 'R3', 'l': 'R4', 'm': 'R5',
             'b': 'R1', 'n': 'R2', ',': 'R3', ';': 'R4', ':': 'R5',
+            // Touches spéciales
+            'Backspace': 'R5', 'Enter': 'R5', 'Shift': 'L5', ' ': 'R1'
+        };
+        
+        // Mapping des doigts pour QWERTY
+        const fingerMappingQWERTY = {
+            // Main gauche
+            '`': 'L5', '1': 'L5', '2': 'L4', '3': 'L3', '4': 'L2', '5': 'L1',
+            'q': 'L5', 'w': 'L4', 'e': 'L3', 'r': 'L2', 't': 'L1',
+            'a': 'L5', 's': 'L4', 'd': 'L3', 'f': 'L2', 'g': 'L1',
+            'z': 'L5', 'x': 'L4', 'c': 'L3', 'v': 'L2', 'b': 'L1',
+            // Main droite
+            '6': 'R1', '7': 'R2', '8': 'R3', '9': 'R4', '0': 'R5',
+            'y': 'R1', 'u': 'R2', 'i': 'R3', 'o': 'R4', 'p': 'R5',
+            'h': 'R1', 'j': 'R2', 'k': 'R3', 'l': 'R4', ';': 'R5',
+            'n': 'R1', 'm': 'R2', ',': 'R3', '.': 'R4', '/': 'R5',
             // Touches spéciales
             'Backspace': 'R5', 'Enter': 'R5', 'Shift': 'L5', ' ': 'R1'
         };
@@ -1435,6 +1693,15 @@
             paragraphs: [150, 140, 130, 120, 110, 100, 90, 80, 70, 60]
         };
         
+        // Thèmes disponibles
+        const themes = {
+            blue: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+            dark: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+            red: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+            green: 'linear-gradient(135deg, #27ae60 0%, #219653 100%)',
+            purple: 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)'
+        };
+        
         // =============================================
         // VARIABLES GLOBALES
         // =============================================
@@ -1458,17 +1725,23 @@
         let allSessions = JSON.parse(localStorage.getItem('innovtechSessions') || '[]');
         let userAchievements = JSON.parse(localStorage.getItem('innovtechAchievements') || '[]');
         let chatHistory = JSON.parse(localStorage.getItem('innovtechChatHistory') || '[]');
+        let userSettings = JSON.parse(localStorage.getItem('innovtechUserSettings') || '{}');
         
         // Variables pour la pause
         let isPaused = false;
         let pausedTime = 0;
         let pauseStartTime = null;
         
+        // Variables pour les graphiques
+        let progressChart = null;
+        
         // =============================================
         // ÉLÉMENTS DOM
         // =============================================
         const authPage = document.getElementById('authPage');
         const aboutPage = document.getElementById('aboutPage');
+        const profilePage = document.getElementById('profilePage');
+        const settingsPage = document.getElementById('settingsPage');
         const gamePage = document.getElementById('gamePage');
         const targetTextElement = document.getElementById('targetText');
         const userInput = document.getElementById('userInput');
@@ -1494,6 +1767,7 @@
                 loadUserHistory();
                 loadUserAchievements();
                 loadChatHistory();
+                applyUserSettings();
             } else {
                 showAuth();
             }
@@ -1501,6 +1775,7 @@
             setupEventListeners();
             setupChatbox();
             updateStats();
+            setupColorPicker();
         });
         
         // =============================================
@@ -1509,6 +1784,8 @@
         function showAuth() {
             authPage.style.display = 'block';
             aboutPage.style.display = 'none';
+            profilePage.style.display = 'none';
+            settingsPage.style.display = 'none';
             gamePage.style.display = 'none';
             historySection.style.display = 'none';
             achievementsSection.style.display = 'none';
@@ -1517,6 +1794,8 @@
         function showGame() {
             authPage.style.display = 'none';
             aboutPage.style.display = 'none';
+            profilePage.style.display = 'none';
+            settingsPage.style.display = 'none';
             gamePage.style.display = 'block';
             if (currentUser) {
                 // Déterminer le message de bienvenue selon l'heure
@@ -1538,6 +1817,18 @@
             aboutPage.style.display = 'block';
         }
         
+        function showProfile() {
+            gamePage.style.display = 'none';
+            profilePage.style.display = 'block';
+            updateProfilePage();
+        }
+        
+        function showSettings() {
+            gamePage.style.display = 'none';
+            settingsPage.style.display = 'block';
+            loadSettings();
+        }
+        
         function logout() {
             if (gameActive) {
                 saveSession();
@@ -1547,6 +1838,239 @@
             resetGame();
             resetTimer();
             showAuth();
+        }
+        
+        // =============================================
+        // PROFIL UTILISATEUR
+        // =============================================
+        function updateProfilePage() {
+            if (!currentUser) return;
+            
+            // Avatar
+            const initials = (currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0)).toUpperCase();
+            document.getElementById('profileAvatar').textContent = initials;
+            
+            // Informations
+            document.getElementById('profileName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profileExperience').textContent = getExperienceLabel(currentUser.experience);
+            
+            // Statistiques
+            document.getElementById('profileLevel').textContent = currentUser.stats.level;
+            document.getElementById('profileBestWpm').textContent = currentUser.stats.bestWpm;
+            document.getElementById('profileBestAccuracy').textContent = currentUser.stats.bestAccuracy + '%';
+            document.getElementById('profileSessions').textContent = currentUser.stats.sessionsCompleted;
+            
+            // Graphique de progression
+            createProgressChart();
+        }
+        
+        function getExperienceLabel(exp) {
+            const labels = {
+                'debutant': 'Débutant',
+                'intermediaire': 'Intermédiaire',
+                'avance': 'Avancé',
+                'expert': 'Expert'
+            };
+            return labels[exp] || 'Débutant';
+        }
+        
+        function createProgressChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Données de progression (exemple)
+            const recentSessions = allSessions
+                .filter(session => session.userId === currentUser.id)
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .slice(-7);
+            
+            const labels = recentSessions.map((session, index) => `Session ${index + 1}`);
+            const wpmData = recentSessions.map(session => session.wpm);
+            const accuracyData = recentSessions.map(session => session.accuracy);
+            
+            if (progressChart) {
+                progressChart.destroy();
+            }
+            
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Mots par minute',
+                            data: wpmData,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Précision (%)',
+                            data: accuracyData,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Votre progression'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // =============================================
+        // PARAMÈTRES UTILISATEUR
+        // =============================================
+        function setupColorPicker() {
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    updateThemePreview(this.dataset.theme);
+                });
+            });
+        }
+        
+        function updateThemePreview(theme) {
+            document.getElementById('themePreview').style.background = themes[theme];
+        }
+        
+        function loadSettings() {
+            // Charger les paramètres dans le formulaire
+            if (currentUser) {
+                document.getElementById('editFirstName').value = currentUser.firstName;
+                document.getElementById('editLastName').value = currentUser.lastName;
+                document.getElementById('editEmail').value = currentUser.email;
+            }
+            
+            // Charger les préférences
+            const settings = userSettings;
+            if (settings.theme) {
+                document.querySelector(`.color-option[data-theme="${settings.theme}"]`).click();
+            }
+            if (settings.keyboardLayout) {
+                document.getElementById('keyboardLayout').value = settings.keyboardLayout;
+            }
+            if (settings.notifications !== undefined) {
+                document.getElementById('notificationsEnabled').checked = settings.notifications;
+            }
+            if (settings.achievementNotifications !== undefined) {
+                document.getElementById('achievementNotifications').checked = settings.achievementNotifications;
+            }
+        }
+        
+        function saveSettings() {
+            // Sauvegarder les informations personnelles
+            if (currentUser) {
+                currentUser.firstName = document.getElementById('editFirstName').value;
+                currentUser.lastName = document.getElementById('editLastName').value;
+                currentUser.email = document.getElementById('editEmail').value;
+                localStorage.setItem('innovtechCurrentUser', JSON.stringify(currentUser));
+            }
+            
+            // Sauvegarder les préférences
+            const selectedTheme = document.querySelector('.color-option.selected').dataset.theme;
+            userSettings = {
+                theme: selectedTheme,
+                keyboardLayout: document.getElementById('keyboardLayout').value,
+                notifications: document.getElementById('notificationsEnabled').checked,
+                achievementNotifications: document.getElementById('achievementNotifications').checked
+            };
+            localStorage.setItem('innovtechUserSettings', JSON.stringify(userSettings));
+            
+            // Appliquer les paramètres
+            applyUserSettings();
+            
+            // Notification de succès
+            showNotification('Paramètres enregistrés avec succès !', 'success');
+            
+            showGame();
+        }
+        
+        function applyUserSettings() {
+            const settings = userSettings;
+            
+            // Appliquer le thème
+            if (settings.theme && themes[settings.theme]) {
+                document.body.style.background = themes[settings.theme];
+            }
+            
+            // Appliquer la disposition du clavier
+            if (settings.keyboardLayout === 'qwerty') {
+                createQWERTYKeyboard();
+            } else {
+                createAZERTYKeyboard();
+            }
+        }
+        
+        function resetAccount() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser votre compte ? Toutes vos données seront perdues.')) {
+                localStorage.removeItem('innovtechCurrentUser');
+                localStorage.removeItem('innovtechSessions');
+                localStorage.removeItem('innovtechAchievements');
+                localStorage.removeItem('innovtechUserSettings');
+                localStorage.removeItem('innovtechChatHistory');
+                
+                currentUser = null;
+                allSessions = [];
+                userAchievements = [];
+                userSettings = {};
+                chatHistory = [];
+                
+                showAuth();
+                showNotification('Compte réinitialisé avec succès !', 'success');
+            }
+        }
+        
+        function showNotification(message, type = 'info') {
+            const settings = userSettings;
+            if (settings.notifications === false) return;
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideInRight 0.5s ease-out;
+                max-width: 300px;
+            `;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.5s ease-in';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
         }
         
         // =============================================
@@ -1689,6 +2213,56 @@
             virtualKeyboard.appendChild(handsOverlay);
             // Créer les rangées AZERTY
             azertyLayout.forEach((row, rowIndex) => {
+                const rowElement = document.createElement('div');
+                rowElement.className = `key-row row-${rowIndex + 1}`;
+                row.forEach((key, keyIndex) => {
+                    const keyElement = document.createElement('div');
+                    keyElement.className = 'key-realiste';
+                    keyElement.textContent = key;
+                    keyElement.dataset.key = key;
+                    if (key === ' ') {
+                        keyElement.classList.add('key-space');
+                    } else if (['Tab', 'Caps', 'Shift', 'Enter', 'Backspace', 'Ctrl', 'Alt'].includes(key)) {
+                        keyElement.classList.add('key-special');
+                    }
+                    rowElement.appendChild(keyElement);
+                });
+                virtualKeyboard.appendChild(rowElement);
+            });
+        }
+        
+        function createQWERTYKeyboard() {
+            virtualKeyboard.innerHTML = '';
+            // Ajouter les mains réalistes
+            const handsOverlay = document.createElement('div');
+            handsOverlay.className = 'hands-overlay-real';
+            handsOverlay.innerHTML = `
+                <div class="hand-realiste hand-left-real" id="leftHand">
+                    <div class="palm-real"></div>
+                    <div class="fingers-real">
+                        <div class="finger-real" id="fingerL1"></div>
+                        <div class="finger-real" id="fingerL2"></div>
+                        <div class="finger-real" id="fingerL3"></div>
+                        <div class="finger-real" id="fingerL4"></div>
+                        <div class="finger-real" id="fingerL5"></div>
+                    </div>
+                    <div class="thumb-real" id="thumbL"></div>
+                </div>
+                <div class="hand-realiste hand-right-real" id="rightHand">
+                    <div class="palm-real"></div>
+                    <div class="fingers-real">
+                        <div class="finger-real" id="fingerR1"></div>
+                        <div class="finger-real" id="fingerR2"></div>
+                        <div class="finger-real" id="fingerR3"></div>
+                        <div class="finger-real" id="fingerR4"></div>
+                        <div class="finger-real" id="fingerR5"></div>
+                    </div>
+                    <div class="thumb-real" id="thumbR"></div>
+                </div>
+            `;
+            virtualKeyboard.appendChild(handsOverlay);
+            // Créer les rangées QWERTY
+            qwertyLayout.forEach((row, rowIndex) => {
                 const rowElement = document.createElement('div');
                 rowElement.className = `key-row row-${rowIndex + 1}`;
                 row.forEach((key, keyIndex) => {
@@ -1879,8 +2453,8 @@
             individualTimerSection.style.display = 'block';
             // Réinitialiser la pause
             isPaused = false;
-            pausedTime = 0;
-            pauseStartTime = null;
+            pausedTime = 0
+                        pauseStartTime = null;
             hidePauseOverlay();
             document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
         }
@@ -2327,7 +2901,11 @@
         function unlockAchievement(achievement) {
             userAchievements.push(achievement.id);
             localStorage.setItem('innovtechAchievements', JSON.stringify(userAchievements));
-            showAchievementNotification(achievement);
+            
+            const settings = userSettings;
+            if (settings.achievementNotifications !== false) {
+                showAchievementNotification(achievement);
+            }
             loadUserAchievements();
         }
         
